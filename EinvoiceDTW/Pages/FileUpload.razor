@@ -1,0 +1,35 @@
+﻿@page "/upload"
+@using EinvoiceDTW.Services;
+@inject IFileUploadService FileUploadService
+
+<h3>Upload Excel File</h3>
+
+<InputFile OnChange="HandleFileSelected" />
+
+@if (!string.IsNullOrEmpty(uploadResult))
+{
+    <div>
+        <h4>Upload Result</h4>
+        <p>@uploadResult</p>
+    </div>
+}
+
+@code {
+    private string uploadResult;
+
+    private async Task HandleFileSelected(InputFileChangeEventArgs e)
+    {
+        var file = e.File;
+
+        var filePath = await FileUploadService.UploadFileAsync(file, "invoice");
+
+        if (!string.IsNullOrEmpty(filePath))
+        {
+            uploadResult = $"File '{file.Name}' uploaded successfully. Path: {filePath}";
+        }
+        else
+        {
+            uploadResult = "File upload failed.";
+        }
+    }
+}

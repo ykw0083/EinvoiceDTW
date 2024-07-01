@@ -1,0 +1,40 @@
+USE [EinvoiceDTW]
+GO
+/****** Object:  StoredProcedure [dbo].[InitTable]    Script Date: 7/1/2024 4:26:27 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+ALTER PROCEDURE [dbo].[InitTable]
+AS
+BEGIN
+	IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'LHDN_Invoice')
+	BEGIN
+		CREATE TABLE LHDN_Invoice (
+			InvoiceID INT PRIMARY KEY IDENTITY(1,1),
+			InvoiceNumber NVARCHAR(50) NOT NULL,
+			InvoiceDate DATETIME NOT NULL,
+			SupplierName NVARCHAR(100) NOT NULL,
+			SupplierTaxID NVARCHAR(20) NOT NULL,
+			SupplierAddress NVARCHAR(255) NOT NULL,
+			CustomerName NVARCHAR(100) NOT NULL,
+			CustomerTaxID NVARCHAR(20),
+			CustomerAddress NVARCHAR(255),
+			ItemLine int,
+			ItemDescription NVARCHAR(255) NOT NULL,
+			ItemQuantity DECIMAL(10, 2) NOT NULL,
+			ItemUnitPrice DECIMAL(10, 2) NOT NULL,
+			ItemTotal DECIMAL(10, 2) NOT NULL,
+			SubTotal DECIMAL(10, 2) NOT NULL,
+			TaxRate DECIMAL(5, 2) NOT NULL,
+			TaxAmount DECIMAL(10, 2) NOT NULL,
+			TotalAmount DECIMAL(10, 2) NOT NULL,
+			CurrencyCode NVARCHAR(3) NOT NULL,
+			PaymentTerms NVARCHAR(100),
+			Notes NVARCHAR(500),
+			Confirm int
+		);
+	end
+
+
+END

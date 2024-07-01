@@ -1,0 +1,77 @@
+USE [EinvoiceDTW]
+GO
+/****** Object:  StoredProcedure [dbo].[PushJsonToTable]    Script Date: 7/1/2024 5:15:58 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+ALTER PROCEDURE [dbo].[PushJsonToTable]
+@json nvarchar(max),
+@type nvarchar(50)
+AS
+BEGIN
+	declare @QueryCode int = 0
+	declare @QueryMsg nvarchar(255) = ''
+
+	BEGIN TRY  
+		if @type = 'invoice'
+		begin
+			INSERT INTO LHDN_Invoice (InvoiceNumber, InvoiceDate, SupplierName, SupplierTaxID, SupplierAddress,
+									   CustomerName, CustomerTaxID, CustomerAddress,
+									   ItemLine, ItemDescription, ItemQuantity, ItemUnitPrice, ItemTotal,
+									   SubTotal, TaxRate, TaxAmount, TotalAmount,
+									   CurrencyCode, PaymentTerms, Notes, 
+									   Confirm)
+			SELECT 
+				InvoiceNumber, 
+				CONVERT(DATETIME, InvoiceDate),
+				SupplierName, 
+				SupplierTaxID, 
+				SupplierAddress, 
+				CustomerName, 
+				CustomerTaxID, 
+				CustomerAddress, 
+				ItemLine,
+				ItemDescription, 
+				ItemQuantity, 
+				ItemUnitPrice, 
+				ItemTotal, 
+				SubTotal, 
+				TaxRate, 
+				TaxAmount, 
+				TotalAmount, 
+				CurrencyCode, 
+				PaymentTerms, 
+				Notes,
+				0
+			FROM OPENJSON(@json)
+			WITH (
+				InvoiceNumber NVARCHAR(50),
+				InvoiceDate NVARCHAR(50),
+				SupplierName NVARCHAR(100),
+				SupplierTaxID NVARCHAR(20),
+				SupplierAddress NVARCHAR(255),
+				CustomerName NVARCHAR(100),
+				CustomerTaxID NVARCHAR(20),
+				CustomerAddress NVARCHAR(255),
+				ItemLine int,
+				ItemDescription NVARCHAR(255),
+				ItemQuantity DECIMAL(10, 2),
+				ItemUnitPrice DECIMAL(10, 2),
+				ItemTotal DECIMAL(10, 2),
+				SubTotal DECIMAL(10, 2),
+				TaxRate DECIMAL(5, 2),
+				TaxAmount DECIMAL(10, 2),
+				TotalAmount DECIMAL(10, 2),
+				CurrencyCode NVARCHAR(3),
+				PaymentTerms NVARCHAR(100),
+				Notes NVARCHAR(500)
+			)
+
+		end
+	end try
+	begin catch
+		SELECT @QueryCode = ERROR_NUMBER(), @QueryMsg = ERROR_MESSAGE(); 		
+	end catch
+	select @QueryCode as QueryCode, @QueryMsg as QueryMsg
+END
