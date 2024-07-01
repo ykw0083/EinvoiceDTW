@@ -1,0 +1,57 @@
+﻿@using EinvoiceDTW.Models;
+@using EinvoiceDTW.Services;
+
+@inject IDataService LHDN_InvoiceService
+
+<h3>invoices</h3>
+
+@code {
+
+}
+@page "/invoices"
+
+@if (Invoices == null)
+{
+    <p>Loading...</p>
+}
+else if (Invoices.Count() == 0)
+{
+    <p>No invoices found.</p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Invoice Number</th>
+                <th>Invoice Date</th>
+                <th>Supplier Name</th>
+                <th>Customer Name</th>
+                <th>Total Amount</th>
+                <!-- Add more headers as needed -->
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var invoice in Invoices)
+            {
+                <tr>
+                    <td>@invoice.InvoiceNumber</td>
+                    <td>@invoice.InvoiceDate.ToShortDateString()</td>
+                    <td>@invoice.SupplierName</td>
+                    <td>@invoice.CustomerName</td>
+                    <td>@invoice.TotalAmount.ToString("C")</td>
+                    <!-- Add more columns as needed -->
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    IEnumerable<LHDN_Invoice> Invoices;
+
+    protected override async Task OnInitializedAsync()
+    {
+        Invoices = await LHDN_InvoiceService.GetInvoicesAsync();
+    }
+}

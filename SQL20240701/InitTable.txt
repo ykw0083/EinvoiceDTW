@@ -1,6 +1,6 @@
 USE [EinvoiceDTW]
 GO
-/****** Object:  StoredProcedure [dbo].[InitTable]    Script Date: 7/1/2024 4:26:27 PM ******/
+/****** Object:  StoredProcedure [dbo].[InitTable]    Script Date: 7/1/2024 5:52:11 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -32,9 +32,17 @@ BEGIN
 			CurrencyCode NVARCHAR(3) NOT NULL,
 			PaymentTerms NVARCHAR(100),
 			Notes NVARCHAR(500),
-			Confirm int
+			Confirm bit,
+			MyFileName NVARCHAR(500)
 		);
 	end
-
+	IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'LHDN_Invoice' and COLUMN_NAME = 'LHDN_Status')
+	BEGIN
+		alter table LHDN_Invoice add LHDN_Status nvarchar(1024)
+	end
+	IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'LHDN_Invoice' and COLUMN_NAME = 'LHDN_Response')
+	BEGIN
+		alter table LHDN_Invoice add LHDN_Response nvarchar(1024)
+	end
 
 END

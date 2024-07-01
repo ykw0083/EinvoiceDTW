@@ -1,13 +1,14 @@
 USE [EinvoiceDTW]
 GO
-/****** Object:  StoredProcedure [dbo].[PushJsonToTable]    Script Date: 7/1/2024 5:15:58 PM ******/
+/****** Object:  StoredProcedure [dbo].[PushJsonToTable]    Script Date: 7/1/2024 5:42:44 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
 ALTER PROCEDURE [dbo].[PushJsonToTable]
 @json nvarchar(max),
-@type nvarchar(50)
+@type nvarchar(50),
+@myfilename nvarchar(500)
 AS
 BEGIN
 	declare @QueryCode int = 0
@@ -21,7 +22,7 @@ BEGIN
 									   ItemLine, ItemDescription, ItemQuantity, ItemUnitPrice, ItemTotal,
 									   SubTotal, TaxRate, TaxAmount, TotalAmount,
 									   CurrencyCode, PaymentTerms, Notes, 
-									   Confirm)
+									   Confirm, MyFileName)
 			SELECT 
 				InvoiceNumber, 
 				CONVERT(DATETIME, InvoiceDate),
@@ -43,7 +44,8 @@ BEGIN
 				CurrencyCode, 
 				PaymentTerms, 
 				Notes,
-				0
+				0,
+				@myfilename
 			FROM OPENJSON(@json)
 			WITH (
 				InvoiceNumber NVARCHAR(50),
@@ -67,7 +69,6 @@ BEGIN
 				PaymentTerms NVARCHAR(100),
 				Notes NVARCHAR(500)
 			)
-
 		end
 	end try
 	begin catch

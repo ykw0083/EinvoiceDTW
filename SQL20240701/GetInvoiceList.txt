@@ -1,0 +1,37 @@
+USE [EinvoiceDTW]
+GO
+/****** Object:  StoredProcedure [dbo].[GetInvoiceList]    Script Date: 7/1/2024 5:59:11 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+ALTER PROCEDURE [dbo].[GetInvoiceList]
+as
+begin
+	SELECT TOP (1000) [InvoiceID]
+      ,[InvoiceNumber]
+      ,[InvoiceDate]
+      ,[SupplierName]
+      ,[SupplierTaxID]
+      ,[SupplierAddress]
+      ,[CustomerName]
+      ,[CustomerTaxID]
+      ,[CustomerAddress]
+      ,[ItemLine]
+      ,[ItemDescription]
+      ,[ItemQuantity]
+      ,[ItemUnitPrice]
+      ,[ItemTotal]
+      ,[SubTotal]
+      ,[TaxRate]
+      ,[TaxAmount]
+      ,[TotalAmount]
+      ,[CurrencyCode]
+      ,[PaymentTerms]
+      ,[Notes]
+      ,[Confirm]
+      ,[MyFileName]
+      ,[LHDN_Status]
+      ,[LHDN_Response]
+  FROM [EinvoiceDTW].[dbo].[LHDN_Invoice]
+end

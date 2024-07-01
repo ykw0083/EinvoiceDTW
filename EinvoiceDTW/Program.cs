@@ -19,7 +19,7 @@ builder.Services.AddTransient<IDatabaseContext, DatabaseContext>();
 builder.Services.AddSingleton<IDataService, DataService>();
 
 var app = builder.Build();
-ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+ExcelPackage.LicenseContext = LicenseContext.Commercial;
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
